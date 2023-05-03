@@ -43,7 +43,7 @@ void stepperSetup()
 {
    stepper.setAcceleration(500);
    stepper.setMaxSpeed(1500);
-   stepper.setSpeed(500);
+   stepper.setSpeed(1000);
 }
 
 void setup()
