@@ -57,6 +57,5 @@ void loop()
 {
    const bool run = emergencyStop();
    stepperRun(run);
-
    Serial.println(run);
 }
