@@ -42,7 +42,7 @@ void stepperRun(const bool run)
 void stepperSetup()
 {
    stepper.setAcceleration(500);
-   stepper.setMaxSpeed(1000);
+   stepper.setMaxSpeed(1500);
    stepper.setSpeed(500);
 }
 
