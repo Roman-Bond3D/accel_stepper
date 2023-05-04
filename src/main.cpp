@@ -33,7 +33,7 @@ void stepperRun(const bool run)
 {
    if (run)
    {
-      stepper.runSpeed();
+      stepper.run();
    }
 }
 
