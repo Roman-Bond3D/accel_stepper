@@ -4,7 +4,7 @@ const int
     ESTOP1_PIN = 12,
     ESTOP2_PIN = 13;
 
-AccelStepper stepper(AccelStepper::DRIVER, 2, 5);
+AccelStepper stepper(AccelStepper::DRIVER, 2, 5, true);
 
 const bool emergencyStop()
 {
@@ -13,10 +13,12 @@ const bool emergencyStop()
 
    if (!eStop1 && !eStop2)
    {
+      stepper.enableOutputs();
       return true;
    }
    else
    {
+      stepper.disableOutputs();
       return false;
    }
 }
@@ -33,22 +35,20 @@ void stepperRun(const bool run)
    {
       stepper.runSpeed();
    }
-   else
-   {
-      stepper.stop();
-   }
 }
 
 void stepperSetup()
 {
+   stepper.setEnablePin(8);
+   stepper.setPinsInverted(false, false, true);
    stepper.setAcceleration(500);
-   stepper.setMaxSpeed(1500);
-   stepper.setSpeed(1000);
+   stepper.setMaxSpeed(1000);
+   stepper.setSpeed(-1000);   
 }
 
 void setup()
 {
-   Serial.begin(9600);
+   //Serial.begin(9600);
    emergencySetup();
    stepperSetup();
 }
@@ -57,5 +57,5 @@ void loop()
 {
    const bool run = emergencyStop();
    stepperRun(run);
-   Serial.println(run);
+   //Serial.println(run);
 }
