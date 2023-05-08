@@ -29,14 +29,6 @@ void emergencySetup()
    pinMode(ESTOP2_PIN, INPUT_PULLUP);
 }
 
-void stepperRun(const bool run)
-{
-   if (run)
-   {
-      stepper.run();
-   }
-}
-
 void stepperSetup()
 {
    stepper.setEnablePin(8);
@@ -44,6 +36,20 @@ void stepperSetup()
    stepper.setAcceleration(500);
    stepper.setMaxSpeed(1000);
    stepper.setSpeed(-1000);   
+}
+
+void stepperRun(const bool run)
+{
+   if (run)
+   {
+      //stepper.run();
+      stepper.runSpeed();
+   }
+}
+
+void toggleButton()
+{
+
 }
 
 void setup()
@@ -55,7 +61,8 @@ void setup()
 
 void loop()
 {
-   const bool run = emergencyStop();
-   stepperRun(run);
+   const bool stop = emergencyStop();
+   const bool start = true;
+   stepperRun(true);
    //Serial.println(run);
 }
