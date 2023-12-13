@@ -1,8 +1,12 @@
 #include <AccelStepper.h>
-
 const int
     ESTOP1_PIN = 12,
-    ESTOP2_PIN = 13;
+    ESTOP2_PIN = 13,
+    START_PIN = 16,
+    STOP_PIN = 15;
+
+bool
+    enable = false;
 
 AccelStepper stepper(AccelStepper::DRIVER, 2, 5, true);
 
@@ -19,6 +23,7 @@ const bool emergencyStop()
    else
    {
       stepper.disableOutputs();
+      enable = false;
       return false;
    }
 }
@@ -29,40 +34,60 @@ void emergencySetup()
    pinMode(ESTOP2_PIN, INPUT_PULLUP);
 }
 
+void enableSetup()
+{
+   pinMode(START_PIN, INPUT_PULLUP);
+   pinMode(STOP_PIN, INPUT_PULLUP);
+}
+
 void stepperSetup()
 {
    stepper.setEnablePin(8);
    stepper.setPinsInverted(false, false, true);
    stepper.setAcceleration(500);
-   stepper.setMaxSpeed(1000);
-   stepper.setSpeed(-1000);   
+   stepper.setMaxSpeed(1200);
+   stepper.setSpeed(-1200);
 }
 
-void stepperRun(const bool run)
+void enableStepper(bool safe)
 {
-   if (run)
+   if (safe)
    {
-      //stepper.run();
-      stepper.runSpeed();
+      const bool start = !digitalRead(START_PIN);
+      const bool stop = !digitalRead(STOP_PIN);
+
+      if (start && !stop)
+      {
+         enable = true;
+      }
+      else if (stop)
+      {
+         enable = false;
+      }
+
+      if (enable)
+      {
+         stepper.enableOutputs();
+         stepper.runSpeed();
+         // Serial.println("start");
+      }
+      else
+      {
+         stepper.disableOutputs();
+         // Serial.println("stop");
+      }
    }
-}
-
-void toggleButton()
-{
-
 }
 
 void setup()
 {
-   //Serial.begin(9600);
+   // Serial.begin(9600);
    emergencySetup();
+   enableSetup();
    stepperSetup();
 }
 
 void loop()
 {
-   const bool stop = emergencyStop();
-   const bool start = true;
-   stepperRun(true);
-   //Serial.println(run);
+   enableStepper(emergencyStop());
 }
